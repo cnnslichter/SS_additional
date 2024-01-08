@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const config = require('./config.json');
 const PORT = config['PORT']
 const itemRoutes = require('./routes/item');
+const categoryRoutes = require('./routes/category');
 const registerRoutes = require('./routes/register');
 const flash = require('express-flash');
 const methodOverride = require('method-override');
@@ -80,7 +81,7 @@ mongoose.connect(process.env.MONGODB_URL, {
     app.get('/try', (req, res) => {
       res.send('Connected to try');
     });
-    app.use('/api/item', itemRoutes);
+    // app.use('/api/item', itemRoutes);
     app.use('/api', registerRoutes);
     app.use("/api/v1/product", itemRoutes);
     //Can add more routes here
@@ -167,54 +168,8 @@ mongoose.connect(process.env.MONGODB_URL, {
         }
       })
     });
-
-    app.get('/getItems', (req, res) => {
-      Item.find()
-        .then(items => res.json(items))
-        .catch(err => res.json(err))
-    })
-
-    app.get('/getTextbooks', (req, res) => {
-      Item.find({ category: "Textbooks" })
-        .then(items => res.json(items))
-        .catch(err => res.json(err))
-    })
-
-    app.get('/getClothes', (req, res) => {
-      Item.find({ category: "Clothes" })
-        .then(items => res.json(items))
-        .catch(err => res.json(err))
-    })
-
-    app.get('/getGeneralDecor', (req, res) => {
-      Item.find({ category: "General Decor" })
-        .then(items => res.json(items))
-        .catch(err => res.json(err))
-    })
-
-    app.get('/getFurniture', (req, res) => {
-      Item.find({ category: "Furniture" })
-        .then(items => res.json(items))
-        .catch(err => res.json(err))
-    })
-
-    app.get('/getAppliances', (req, res) => {
-      Item.find({ category: "Appliances" })
-        .then(items => res.json(items))
-        .catch(err => res.json(err))
-    })
-
-    app.get('/getTickets', (req, res) => {
-      Item.find({ category: "Tickets" })
-        .then(items => res.json(items))
-        .catch(err => res.json(err))
-    })
-
-    app.get('/getOther', (req, res) => {
-      Item.find({ category: "Other" })
-        .then(items => res.json(items))
-        .catch(err => res.json(err))
-    })
+    app.use('/api/item', itemRoutes);
+    app.use('/api', categoryRoutes);
 
     app.delete('/api/deleteItem/:id', async (req, res) => {
       try {

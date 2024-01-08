@@ -8,7 +8,7 @@ export const GeneralDecor = () => {
   const urlSearchParams = new URLSearchParams(`?category=textbooks`);
 
   useEffect(() => {
-    axios.get('http://localhost:5003/getGeneralDecor')
+    axios.get('http://localhost:5003/api/getGeneralDecor')
     .then(items => setItems(items.data))
     .catch(err => console.log(err))
   }, [])

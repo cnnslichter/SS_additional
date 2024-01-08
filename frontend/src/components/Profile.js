@@ -52,7 +52,7 @@ export const Profile = (props) => {
 
     const getBookmarks = async () =>  {
       try {
-        const itemsRes = await axios.get('http://localhost:5003/getItems');
+        const itemsRes = await axios.get('http://localhost:5003/api/getItems');
         const userBookmarks = itemsRes.data.filter((item) => item.bookmarkedBy?.includes(user?._id));
 
         setBookmarks(userBookmarks)

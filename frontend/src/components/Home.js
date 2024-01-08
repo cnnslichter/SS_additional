@@ -9,7 +9,7 @@ export const Home = () => {
     queryKey: ['getItems'],
     queryFn: async () => {
       const { data } = await axios.get(
-        'http://localhost:5003/getItems'
+        'http://localhost:5003/api/getItems'
       )
       return data
     },

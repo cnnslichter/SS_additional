@@ -7,7 +7,7 @@ export const Appliances = () => {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5003/getAppliances')
+    axios.get('http://localhost:5003/api/getAppliances')
     .then(items => setItems(items.data))
     .catch(err => console.log(err))
   }, [])

@@ -7,7 +7,7 @@ export const Furniture = () => {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5003/getFurniture')
+    axios.get('http://localhost:5003/api/getFurniture')
     .then(items => setItems(items.data))
     .catch(err => console.log(err))
   }, [])

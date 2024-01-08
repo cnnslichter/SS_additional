@@ -7,7 +7,7 @@ export const Other = () => {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5003/getOther')
+    axios.get('http://localhost:5003/api/getOther')
     .then(items => setItems(items.data))
     .catch(err => console.log(err))
   }, [])

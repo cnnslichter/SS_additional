@@ -77,4 +77,10 @@ const getUserItems = async(req, res) => {
     }
 }
 
-module.exports = { upload, postItem,  getItem, comment, getUserItems};
+module.exports = { 
+    upload, 
+    postItem,  
+    getItem, 
+    comment, 
+    getUserItems
+   };
