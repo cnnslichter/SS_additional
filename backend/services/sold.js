@@ -27,4 +27,30 @@ const deleteItem = async (req, res) => {
    }
 }
 
-module.exports = { markSold, deleteItem };
+const bookmarkItem = async(req, res) => {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    console.log('userId: ', userId);
+    console.log('itemId: ', id);
+
+    try {
+        const item = await Item.findById(id);
+        if (item.bookmarkedBy.includes(userId)) {
+            item.bookmarkedBy.pull(userId);
+        } else {
+            item.bookmarkedBy.push(userId);
+        }
+        const savingRes = await item.save();
+
+        if (!savingRes) {
+            return res.status(400).json({ message: "Could not change bookmark status" });
+        }
+
+        return res.status(200).json(savingRes);
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+        return;
+    }
+}
+module.exports = { markSold, deleteItem, bookmarkItem };
