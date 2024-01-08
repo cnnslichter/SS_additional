@@ -12,6 +12,7 @@ const itemRoutes = require('./routes/item');
 const categoryRoutes = require('./routes/category');
 const markSoldRoutes = require('./routes/sold');
 const registerRoutes = require('./routes/register');
+const forgotRoutes = require('./routes/passwordReset');
 const flash = require('express-flash');
 const methodOverride = require('method-override');
 const expressSession = require('express-session');
@@ -113,62 +114,7 @@ mongoose.connect(process.env.MONGODB_URL, {
       }
     });
 
-    app.post("/forgot", (req, res) => {
-      const { email } = req.body;
-      User.findOne({ email: email }).then(user => {
-        if (!user) {
-          return res.send({ Status: "User not existed" })
-        }
-        const token = jwt.sign({ id: user._id }, "jwt_secret_key", { expiresIn: "1d" })
-        const transporter = nodemailer.createTransport(
-          {
-            service: 'Gmail',
-            auth: {
-              user: 'swampysellsuf@gmail.com',
-              pass: process.env.GMAIL_PASSWORD
-            }
-
-          }
-        );
-        //3000 works
-        const mailOptions = {
-          from: 'swampysellsuf@gmail.com',
-          to: email,
-          subject: 'Reset Password Link',
-          text: `http://localhost:3000/reset/${user._id}/${token}`
-        };
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            console.error(error);
-            res.status(500).send('Failed to send verification email')
-          } else {
-            console.log('Email sent: ' + info.response);
-            res.status(200).send('Verification email sent');
-          }
-        });
-
-      })
-    })
-
-    app.post('/reset/:id/:token', (req, res) => {
-      const { id, token } = req.params
-      const { password } = req.body
-      console.log('New Password', password)
-
-      jwt.verify(token, "jwt_secret_key", (err, decoded) => {
-        if (err) {
-          return res.json({ Status: "Error with token" })
-        } else {
-          bcrypt.hash(password, 12)
-            .then(hash => {
-              User.findByIdAndUpdate({ _id: id }, { password: hash })
-                .then(u => res.send({ Status: "Success" }))
-                .catch(err => res.send({ Status: err }))
-            })
-            .catch(err => res.send({ Status: err }))
-        }
-      })
-    });
+    app.use('/', forgotRoutes);
     app.use('/api/item', itemRoutes);
     app.use('/api', categoryRoutes);
     app.use('/api', markSoldRoutes);
