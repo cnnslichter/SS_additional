@@ -10,6 +10,7 @@ const config = require('./config.json');
 const PORT = config['PORT']
 const itemRoutes = require('./routes/item');
 const categoryRoutes = require('./routes/category');
+const markSoldRoutes = require('./routes/sold');
 const registerRoutes = require('./routes/register');
 const flash = require('express-flash');
 const methodOverride = require('method-override');
@@ -171,34 +172,7 @@ mongoose.connect(process.env.MONGODB_URL, {
     app.use('/api/item', itemRoutes);
     app.use('/api', categoryRoutes);
 
-    app.delete('/api/deleteItem/:id', async (req, res) => {
-      try {
-        const result = await Item.findByIdAndDelete(req.params.id);
-
-        if (!result) {
-          res.status(404).send('No item to be deleted found');
-        }
-
-        res.status(200).send('Item deleted');
-      } catch (error) {
-        console.error(error);
-      }
-    });
-
-    app.put('/api/markSold/:id', async (req, res) => {
-      try {
-        console.log('mark sold called');
-        const result = await Item.findByIdAndUpdate(req.params.id, { sold: true });
-
-        if (!result) {
-          res.status(404).send('No item to be marked sold found');
-        }
-
-        res.status(200).send('Item marked sold');
-      } catch (error) {
-        console.error(error);
-      }
-    });
+    app.use('/api', markSoldRoutes);
 
     app.put('/api/bookmarkItem/:id', async (req, res) => {
       const { id } = req.params;
