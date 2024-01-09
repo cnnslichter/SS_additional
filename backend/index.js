@@ -1,8 +1,5 @@
 const express = require('express'); //Import the express dependency
 const mongoose = require('mongoose');
-const nodemailer = require('nodemailer');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -13,16 +10,11 @@ const categoryRoutes = require('./routes/category');
 const markSoldRoutes = require('./routes/sold');
 const registerRoutes = require('./routes/register');
 const forgotRoutes = require('./routes/passwordReset');
-const flash = require('express-flash');
+const authRoutes = require('./routes/auth/checkAuth');
 const methodOverride = require('method-override');
 const expressSession = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(expressSession);
-const User = require('./models/User');
-
-
 const initializePassport = require('./auth/passportStrategy');
-const Item = require('./models/Item');
-
 const messageRoute = require('./routes/messages');
 const conversationRoute = require('./routes/conversations');
 const userRoute = require('./routes/users');
@@ -90,29 +82,7 @@ mongoose.connect(process.env.MONGODB_URL, {
     app.use('/api/conversations', conversationRoute);
     app.use('/api/messages', messageRoute);
     app.use('/api/user', userRoute);
-
-    app.get('/api/auth', (req, res) => {
-      if (req.isAuthenticated()) {
-        console.log(`/api/auth called:`);
-        res.status(200).json({ authenticated: true, user: req.user });
-      } else {
-        res.status(401).json({ authenticated: false, user: null });
-      }
-    })
-
-    app.post('/api/login', passport.authenticate('local'), (req, res) => {
-      // If the code reaches here, it means authentication was successful
-      res.status(200).json({ message: 'Login successful' });
-    });
-
-    app.post('/api/logout', (req, res) => {
-      if (req.isAuthenticated()) {
-        req.logout((err) => console.log(err));
-        res.status(200).json({ message: 'Logout successful' });
-      } else {
-        res.status(401).json({ message: 'You are not logged in' });
-      }
-    });
+    app.use('/api', authRoutes);
 
     app.use('/', forgotRoutes);
     app.use('/api/item', itemRoutes);
